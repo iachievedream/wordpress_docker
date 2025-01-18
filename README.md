@@ -2,10 +2,18 @@
 
 ## 啟動專案
 ~~~
+cp .env.example .env
+
 docker compose up -d
 docker compose down
 
 docker volume prune
+
+## wordpress_https
+mkdir ssl
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/localhost.key -out ssl/localhost.crt \
+    -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
 ~~~
 
 ## 手動備份指令
