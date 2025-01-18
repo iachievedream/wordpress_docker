@@ -14,6 +14,21 @@ mkdir ssl
 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/localhost.key -out ssl/localhost.crt \
     -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
+
+## 使用 Certbot 申請憑證
+docker exec certbot certonly --webroot \
+  -w /usr/share/nginx/html \
+  -d yourdomain.com -d www.yourdomain.com \
+  --email your-email@example.com \
+  --agree-tos \
+  --no-eff-email
+
+docker exec certbot certonly --webroot \
+  -w /usr/share/nginx/html \
+  -d $(grep DOMAIN .env | cut -d'=' -f2) -d www.$(grep DOMAIN .env | cut -d'=' -f2) \
+  --email $(grep EMAIL .env | cut -d'=' -f2) \
+  --agree-tos \
+  --no-eff-email
 ~~~
 
 ## 手動備份指令
