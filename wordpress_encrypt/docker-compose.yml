@@ -13,6 +13,7 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./ssl:/etc/nginx/ssl
       - ./nginx/log:/var/log/nginx
+      - ./certbot/www:/var/www/certbot  # 添加這行
     environment:
       - DOMAIN=${DOMAIN}
     networks:
@@ -57,6 +58,7 @@ services:
     volumes:
       - ./ssl:/etc/letsencrypt
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/www:/var/www/certbot  # 添加這行
     entrypoint: /bin/sh -c "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew; done"
     environment:
       - DOMAIN=${DOMAIN}

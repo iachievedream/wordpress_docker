@@ -40,7 +40,9 @@ docker exec certbot certonly --webroot \
   --agree-tos \
   --no-eff-email
 
-docker-compose run certbot certonly --webroot --webroot-path=/var/www/certbot -d ${DOMAIN} -d www.${DOMAIN}
+docker compose run certbot certonly --webroot --webroot-path=/var/www/certbot -d ${DOMAIN} -d www.${DOMAIN}
+
+docker compose run certbot certonly --webroot --webroot-path=/var/www/certbot -d ${DOMAIN} -d www.${DOMAIN} --email ${EMAIL} --agree-tos --no-eff-email
 ~~~
 
 ## 手動備份指令
