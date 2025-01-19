@@ -6,15 +6,17 @@ services:
     container_name: nginx
     depends_on:
       - wordpress
-      - certbot
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./ssl:/etc/nginx/ssl
       - ./nginx/log:/var/log/nginx
-      - ./letsencrypt:/etc/letsencrypt  # 存放證書
-      - ./nginx/html:/usr/share/nginx/html
+    environment:
+      - DOMAIN=${DOMAIN}
+    networks:
+      - webnet
 
   wordpress:
     image: wordpress:latest
@@ -28,6 +30,8 @@ services:
       WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
     volumes:
       - ./:/var/www/html
+    networks:
+      - webnet
 
   mysql:
     image: mysql:8.0
@@ -42,14 +46,23 @@ services:
       - ./mysql-data:/var/lib/mysql
     ports:
       - "3306:3306"
+    networks:
+      - webnet
 
   certbot:
     image: certbot/certbot
     container_name: certbot
+    depends_on:
+      - nginx
     volumes:
-      - ./letsencrypt:/etc/letsencrypt
-      - ./nginx/html:/usr/share/nginx/html
-    entrypoint: [
-      "sh", "-c",
-      "certbot certonly --webroot -w /usr/share/nginx/html -d ${DOMAIN} -d www.${DOMAIN} --email ${EMAIL} --agree-tos --no-eff-email && sleep infinity"
-    ]
+      - ./ssl:/etc/letsencrypt
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do sleep 6h & wait $${!}; certbot renew; done"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${EMAIL}
+    networks:
+      - webnet
+
+networks:
+  webnet:
