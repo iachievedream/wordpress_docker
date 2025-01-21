@@ -1,0 +1,42 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name localhost ${DOMAIN};
+
+    return 301 https://$host$request_uri; # 將請求轉到 HTTPS
+}
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name localhost ${DOMAIN};
+
+    # SSL 證書配置
+    ssl_certificate /etc/nginx/ssl/${DOMAIN}.crt;
+    ssl_certificate_key /etc/nginx/ssl/${DOMAIN}.key;
+    # ssl_certificate /etc/nginx/ssl/localhost.crt;
+    # ssl_certificate_key /etc/nginx/ssl/localhost.key;
+
+    # 強制使用安全的加密協議
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # 根目錄配置
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+
+    # 設置訪問日誌和錯誤日誌
+    access_log /var/log/nginx/ssl-access.log;
+    error_log /var/log/nginx/ssl-error.log;
+
+    # 路由處理
+    location / {
+        proxy_pass http://wordpress:80;  # 將請求轉發到 WordPress 服務
+
+        # 設置必要的頭部信息來保持原始請求
+        proxy_set_header Host $host;  # 傳遞原始請求的 Host 標頭
+        proxy_set_header X-Real-IP $remote_addr;  # 傳遞客戶端 IP 地址
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # 保留轉發的 IP 地址
+        proxy_set_header X-Forwarded-Proto $scheme;  # 傳遞使用的協議（http 或 https）
+    }
+}

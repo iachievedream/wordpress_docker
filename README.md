@@ -15,6 +15,7 @@ docker volume prune
 
 ## container 錯誤查看訊息
 docker logs nginx
+docker exec -it nginx bash
 
 ## wordpress_https
 ~~~
