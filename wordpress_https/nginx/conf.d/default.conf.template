@@ -5,6 +5,7 @@ server {
 
     return 301 https://$host$request_uri; # 將請求轉到 HTTPS
 }
+
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -23,7 +24,7 @@ server {
 
     # 根目錄配置
     root /var/www/html;
-    index index.html index.htm;
+    index index.php index.html index.htm;
 
     # 設置訪問日誌和錯誤日誌
     access_log /var/log/nginx/ssl-access.log;
@@ -31,12 +32,10 @@ server {
 
     # 路由處理
     location / {
-        proxy_pass http://wordpress:80;  # 將請求轉發到 WordPress 服務
-
-        # 設置必要的頭部信息來保持原始請求
-        proxy_set_header Host $host;  # 傳遞原始請求的 Host 標頭
-        proxy_set_header X-Real-IP $remote_addr;  # 傳遞客戶端 IP 地址
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # 保留轉發的 IP 地址
-        proxy_set_header X-Forwarded-Proto $scheme;  # 傳遞使用的協議（http 或 https）
+        proxy_pass http://wordpress:80;  # 将请求转发到 wordpress 容器的 Apache
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
