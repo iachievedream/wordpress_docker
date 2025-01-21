@@ -23,6 +23,11 @@ mkdir ssl
 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/localhost.key -out ssl/localhost.crt \
     -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
+
+charleyfu.us.kg
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/charleyfu.us.kg.key -out ssl/charleyfu.us.kg.crt \
+    -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=charleyfu.us.kg"
 ~~~
 
 ## 使用 Certbot 申請憑證
