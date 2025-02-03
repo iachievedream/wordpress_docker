@@ -141,3 +141,12 @@ wordpress：volumes的專案需要掛載在根資料夾當中
 
 給我完整的docker-compose.yml設定檔，
 以及其他必須的程式碼內容嗎？
+
+## Mac 設定 Hosts 教學
+
+`/private/etc/` 或者 `/etc/`
+sudo nano /etc/hosts
+
+127.0.0.1 charleyfu.us.kg
+
+[Mac 設定 Hosts 教學](https://twnoc.net/support/Knowledgebase/Article/View/mac--hosts/3)
