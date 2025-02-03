@@ -1,0 +1,45 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name localhost ${DOMAIN};
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+    location / {
+            return 301 https://$host$request_uri; # 將請求轉到 HTTPS
+    }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name localhost ${DOMAIN};
+
+    # SSL 證書配置
+    ssl_certificate /etc/nginx/ssl/${DOMAIN}.crt;
+    ssl_certificate_key /etc/nginx/ssl/${DOMAIN}.key;
+
+    # 強制使用安全的加密協議
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # 根目錄配置
+    root /var/www/html;
+    index index.php index.html index.htm;
+
+    # 設置訪問日誌和錯誤日誌
+    access_log /var/log/nginx/ssl-access.log;
+    error_log /var/log/nginx/ssl-error.log;
+
+    # 路由處理
+    location / {
+        proxy_pass http://wordpress:80;  # 将请求转发到 wordpress 容器的 Apache
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#        proxy_set_header X-Forwarded-Proto $scheme; #根據客戶端請求動態變化（HTTP 或 HTTPS）
+        proxy_set_header X-Forwarded-Proto https; # 強制標記為 HTTPS
+    }
+}
