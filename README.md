@@ -46,36 +46,12 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/charleyfu.us.kg.
 使用 Certbot 獲取正式憑證
 執行以下指令來獲取正式的 SSL 憑證：
 ~~~bash
-docker exec certbot certonly --webroot \
-  -w /usr/share/nginx/html \
-  -d yourdomain.com -d www.yourdomain.com \
-  --email your-email@example.com \
-  --agree-tos \
-  --no-eff-email
-
-docker exec certbot certonly --webroot \
-  -w /usr/share/nginx/html \
-  -d $(grep DOMAIN .env | cut -d'=' -f2) -d www.$(grep DOMAIN .env | cut -d'=' -f2) \
-  --email $(grep EMAIL .env | cut -d'=' -f2) \
-  --agree-tos \
-  --no-eff-email
-
-docker compose run certbot certonly --webroot \
-  --webroot-path=/var/www/html \
-  --email ${EMAIL} \
-  --agree-tos \
-  --no-eff-email \
-  -d ${DOMAIN}
-
-docker compose run certbot certonly --webroot --webroot-path=/var/www/certbot -d ${DOMAIN} -d www.${DOMAIN}
-
-docker compose run certbot certonly --webroot --webroot-path=/var/www/certbot -d ${DOMAIN} -d www.${DOMAIN} --email ${EMAIL} --agree-tos --no-eff-email
+docker compose run --rm certbot certonly --webroot -w /var/www/certbot -d $DOMAIN --email $EMAIL --agree-tos --no-eff-email --force-renewal
 ~~~
 
 Certbot 會將憑證存放於 ssl/ 資料夾下。
 
 ## 備註
-no matching manifest for linux/arm64/v8 in the manifest list entries
 
 ## 手動備份指令
 ~~~
@@ -141,12 +117,3 @@ wordpress：volumes的專案需要掛載在根資料夾當中
 
 給我完整的docker-compose.yml設定檔，
 以及其他必須的程式碼內容嗎？
-
-## Mac 設定 Hosts 教學
-
-`/private/etc/` 或者 `/etc/`
-sudo nano /etc/hosts
-
-127.0.0.1 charleyfu.us.kg
-
-[Mac 設定 Hosts 教學](https://twnoc.net/support/Knowledgebase/Article/View/mac--hosts/3)
