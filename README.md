@@ -1,15 +1,16 @@
 # README
-
-## alias 快捷命令
-alias docker='sudo docker'
-
-## 啟動專案
+## 啟動專案 wordpress_https
 ~~~
+cd wordpress_https
 cp .env.example .env
 
-docker compose up -d
-docker compose down
+自簽名憑證生成 (簡單方式)，執行以下指令來生成自簽名憑證：
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/localhost.key -out ssl/localhost.crt \
+    -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
 
+docker compose up -d
+
+docker compose down
 docker volume prune
 ~~~
 
@@ -19,27 +20,6 @@ docker logs wordpress
 docker logs certbot
 docker exec -it nginx bash
 docker exec -it wordpress bash
-
-## wordpress_https
-自簽名憑證生成 (簡單方式)
-執行以下指令來生成自簽名憑證：
-~~~bash
-mkdir ssl
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout ssl/privkey.pem \
-  -out ssl/fullchain.pem \
-  -subj "/CN=charleyfu.us.kg"
-
-  # -subj "/CN=${DOMAIN}"
-
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/localhost.key -out ssl/localhost.crt \
-    -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=localhost"
-
-charleyfu.us.kg
-
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/charleyfu.us.kg.key -out ssl/charleyfu.us.kg.crt \
-    -subj "/C=US/ST=State/L=City/O=Organization/OU=Unit/CN=charleyfu.us.kg"
-~~~
 
 ## 使用 Certbot 申請憑證
 
