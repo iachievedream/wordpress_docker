@@ -1,5 +1,27 @@
 # README
-## 啟動專案 wordpress_https
+## 啟動專案 
+<!-- ### wordpress_docker
+~~~
+cd wordpress_https
+cp .env.example .env
+docker compose up -d
+
+瀏覽器輸入網址：
+http://localhost/wp-admin/install.php
+
+docker compose down
+docker volume prune
+~~~ -->
+
+### mac
+下載此專案，並且解壓所後，在此資料夾當中開啟終點機，下以下指令，以便順利執行
+~~~
+chmod +x start-docker.command
+~~~
+
+瀏覽器輸入網址： https://localhost/
+
+### wordpress_https
 ~~~
 cd wordpress_https
 cp .env.example .env
@@ -15,15 +37,17 @@ docker volume prune
 ~~~
 
 ## container 錯誤查看訊息
+~~~
 docker logs nginx
 docker logs wordpress
 docker logs certbot
 docker exec -it nginx bash
 docker exec -it wordpress bash
+~~~
 
 ## 使用 Certbot 申請憑證
 
-使用 Certbot 獲取正式憑證
+使用 Certbot 獲取正式憑證  
 執行以下指令來獲取正式的 SSL 憑證：
 ~~~bash
 docker compose run --rm certbot certonly --webroot -w /var/www/certbot -d $DOMAIN --email $EMAIL --agree-tos --no-eff-email --force-renewal
@@ -68,7 +92,7 @@ feat: add plugins
 [CloudFlare 免費服務＆ WordPress 外掛教學](https://host.com.tw/cloudflare)
 
 ## chatgpt
-
+~~~
 我使用AWS做為雲主機
 domain 為 charleyfu.us.kg
 
@@ -97,3 +121,4 @@ wordpress：volumes的專案需要掛載在根資料夾當中
 
 給我完整的docker-compose.yml設定檔，
 以及其他必須的程式碼內容嗎？
+~~~
